@@ -84,7 +84,7 @@ class Plugin(object):
         if message.content.startswith(self.bot.prefix) and message.content != self.bot.prefix:
             self.log.info("command received")
 
-            if message.author == self.user:  # ignore myself!
+            if message.author == self.bot.user:  # ignore myself!
                 return
 
             no_prefix = message.content[len(self.bot.prefix):]
@@ -93,7 +93,7 @@ class Plugin(object):
                 try:
                     await command(message, no_prefix)
                 except errors.CommandError as e:
-                    self.log.info("command raised exception {!s}".format(e))
+                    self.log.info("command raised {}: {!s}".format(e.__class__.__name__, e))
 
                     await message.channel.send(e)
 
@@ -160,4 +160,28 @@ class Plugin(object):
         pass
 
     async def on_guild_update(self, before, after):
+        pass
+
+    async def on_guild_role_create(self, role):
+        pass
+
+    async def on_guild_role_delete(self, role):
+        pass
+
+    async def on_guild_role_update(self, before, after):
+        pass
+
+    async def on_guild_emojis_update(self, guild, before, after):
+        pass
+
+    async def on_guild_available(self, guild):
+        pass
+
+    async def on_guild_unavailable(self, guild):
+        pass
+
+    async def on_member_ban(self, guild, user):
+        pass
+
+    async def on_member_unban(self, guild, user):
         pass

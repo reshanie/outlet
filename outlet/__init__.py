@@ -24,7 +24,7 @@ import sys
 from outlet.bot import DiscordBot
 from outlet.plugin import Plugin
 
-from outlet.command import command
+from outlet.command import command, require_permissions
 
 from outlet.converters import *
 

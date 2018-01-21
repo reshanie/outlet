@@ -20,3 +20,4 @@ class TooManyArguments(ArgumentError):
 
 class WrongType(ArgumentError):
     pass
+

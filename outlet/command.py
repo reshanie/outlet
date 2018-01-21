@@ -107,7 +107,7 @@ def convert_arguments(args, signature, ctx):
     return converted_args
 
 
-def command(cmd, ):
+def command(cmd):
     """
     Decorator used to create commands.
 
@@ -138,5 +138,33 @@ def command(cmd, ):
         real_command.command = cmd
 
         return real_command
+
+    return real_decorator
+
+
+# helpers
+
+def require_permissions(*permission):
+    """
+    Decorator that makes command require named permission(s)
+
+    :param str permission: permission(s) to require
+    """
+
+    def real_decorator(func):
+        if getattr(func, "is_command", False):
+            raise SyntaxError("@require_permission decorator should be placed under the @command decorator")
+
+        @wraps(func)
+        async def new_func(self_, ctx, *args):
+            author_permissions = ctx.author.permissions_in(ctx.channel)
+
+            for perm in permission:
+                if not getattr(author_permissions, perm, False):
+                    raise errors.MissingPermission("This command requires the `{}` permission.".format(perm))
+
+            await func(self_, ctx, *args)
+
+        return new_func
 
     return real_decorator

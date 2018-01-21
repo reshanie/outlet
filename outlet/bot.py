@@ -78,12 +78,12 @@ class DiscordBot(discord.Client):
 
         return plugins
 
-    # log errors
-
-    async def on_error(self, event_method, *args, **kwargs):
-        exc = sys.exc_info()[1]
-
-        self.log.error("exception while handling {} event: {!s}".format(event_method, exc))
+    # # log errors
+    #
+    # async def on_error(self, event_method, *args, **kwargs):
+    #     exc = sys.exc_info()[1]
+    #
+    #     self.log.error("exception while handling {} event: {!s}".format(event_method, exc))
 
     # event funneling
 
@@ -127,3 +127,82 @@ class DiscordBot(discord.Client):
         for plugin in self.plugins:
             await plugin.on_reaction_clear(message, reactions)
 
+    async def on_private_channel_delete(self, channel):
+        for plugin in self.plugins:
+            await plugin.on_private_channel_delete(channel)
+
+    async def on_private_channel_create(self, channel):
+        for plugin in self.plugins:
+            await plugin.on_private_channel_create(channel)
+
+    async def on_private_channel_update(self, before, after):
+        for plugin in self.plugins:
+            await plugin.on_private_channel_update(before, after)
+
+    async def on_guild_channel_create(self, channel):
+        for plugin in self.plugins:
+            await plugin.on_guild_channel_create(channel)
+
+    async def on_guild_channel_delete(self, channel):
+        for plugin in self.plugins:
+            await plugin.on_guild_channel_delete(channel)
+
+    async def on_guild_channel_update(self, before, after):
+        for plugin in self.plugins:
+            await plugin.on_guild_channel_update(before, after)
+
+    async def on_member_join(self, member):
+        for plugin in self.plugins:
+            await plugin.on_member_join(member)
+
+    async def on_member_remove(self, member):
+        for plugin in self.plugins:
+            await plugin.on_member_remove(member)
+
+    async def on_member_update(self, before, after):
+        for plugin in self.plugins:
+            await plugin.on_member_update(before, after)
+
+    async def on_guild_join(self, guild):
+        for plugin in self.plugins:
+            await plugin.on_guild_join(guild)
+
+    async def on_guild_remove(self, guild):
+        for plugin in self.plugins:
+            await plugin.on_guild_remove(guild)
+
+    async def on_guild_update(self, before, after):
+        for plugin in self.plugins:
+            await plugin.on_guild_update(before, after)
+
+    async def on_guild_role_create(self, role):
+        for plugin in self.plugins:
+            await plugin.on_guild_role_create(role)
+
+    async def on_guild_role_delete(self, role):
+        for plugin in self.plugins:
+            await plugin.on_guild_role_delete(role)
+
+    async def on_guild_role_update(self, before, after):
+        for plugin in self.plugins:
+            await plugin.on_guild_role_update(before, after)
+
+    async def on_guild_emojis_update(self, guild, before, after):
+        for plugin in self.plugins:
+            await plugin.on_guild_emojis_update(guild, before, after)
+
+    async def on_guild_available(self, guild):
+        for plugin in self.plugins:
+            await plugin.on_guild_available(guild)
+
+    async def on_guild_unavailable(self, guild):
+        for plugin in self.plugins:
+            await plugin.on_guild_unavailable(guild)
+
+    async def on_member_ban(self, guild, user):
+        for plugin in self.plugins:
+            await plugin.on_member_ban(guild, user)
+
+    async def on_member_unban(self, guild, user):
+        for plugin in self.plugins:
+            await plugin.on_member_unban(guild, user)
