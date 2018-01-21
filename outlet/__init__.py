@@ -22,11 +22,9 @@ import logging
 import sys
 
 from outlet.bot import DiscordBot
-from outlet.plugin import Plugin
-
 from outlet.command import command, require_permissions
-
 from outlet.converters import *
+from outlet.plugin import Plugin
 
 log = logging.getLogger("outlet")
 log.setLevel(logging.DEBUG)

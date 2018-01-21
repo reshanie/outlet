@@ -18,9 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from outlet import errors
 import re
 
+from outlet import errors
 
 mention = re.compile(r"<@!?([0-9]+)>")
 
@@ -57,7 +57,7 @@ class Number(Converter):
         try:
             return float(value) if "." in value else int(value)
         except ValueError:
-            raise errors.WrongType("{} isn't a number.".format(value))
+            raise errors.WrongType("`{}` isn't a number.".format(value))
 
 
 class Member(Converter):
@@ -69,11 +69,11 @@ class Member(Converter):
     def convert(cls, value, ctx):
         user_id = mention.match(value)
         if user_id is None:
-            raise errors.WrongType("{} isn't a user mention".format(value))
+            raise errors.WrongType("`{}` isn't a user mention".format(value))
 
         user_id = int(user_id.group(1))
         member = ctx.guild.get_member(user_id)
         if member is None:
-            raise errors.WrongType("The mentioned user must be a member in the server")
+            raise errors.WrongType("{} isn't a member of this server".format(value))
 
         return member

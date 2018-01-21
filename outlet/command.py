@@ -18,9 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from outlet import errors, converters
 from functools import wraps
 from inspect import Signature, Parameter
+
+from outlet import errors, converters
 
 
 class Context(object):
@@ -146,25 +147,47 @@ def command(cmd):
 
 def require_permissions(*permission):
     """
-    Decorator that makes command require named permission(s)
+    Decorator factory that makes command require named permission(s)
 
     :param str permission: permission(s) to require
     """
 
     def real_decorator(func):
         if getattr(func, "is_command", False):
-            raise SyntaxError("@require_permission decorator should be placed under the @command decorator")
+            # @outlet.command("h")
+            # @require_permissions("h")
+            # async def h_command(self, ctx):
+
+            raise SyntaxError("@require_permissions() decorator should be placed under the @command decorator")
 
         @wraps(func)
         async def new_func(self_, ctx, *args):
-            author_permissions = ctx.author.permissions_in(ctx.channel)
+            author_permissions = ctx.author.permissions_in(ctx.channel)  # use per channel permissions
 
-            for perm in permission:
+            for perm in permission:  # check all permissions
                 if not getattr(author_permissions, perm, False):
-                    raise errors.MissingPermission("This command requires the `{}` permission.".format(perm))
+                    raise errors.MissingPermission("This command requires the `{}` permission".format(perm))
 
             await func(self_, ctx, *args)
 
         return new_func
 
     return real_decorator
+
+
+def owner_only(func):
+    """
+    Decorator that only allows the owner of the guild to use command.
+    """
+
+    if getattr(func, "is_command", False):
+        raise SyntaxError("@owner_only decorator should be placed under the @command decorator")
+
+    @wraps(func)
+    async def new_func(self_, ctx, *args):
+        if ctx.author != ctx.guild.owner:
+            raise errors.MissingPermission("Only the owner of the guild can use this command")
+
+        await func(self_, ctx, *args)
+
+    return new_func

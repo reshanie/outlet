@@ -24,8 +24,6 @@ import os
 
 import discord
 
-import sys
-
 from outlet import util
 
 log = logging.getLogger("outlet")
