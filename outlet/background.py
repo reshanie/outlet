@@ -18,18 +18,34 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import logging
-import sys
+import asyncio
+from functools import wraps
 
-from outlet import events
-from outlet.bot import DiscordBot
-from outlet.command import command, require_permissions
-from outlet.converters import *
-from outlet.plugin import Plugin
-from outlet.background import run_every
 
-log = logging.getLogger("outlet")
-log.setLevel(logging.DEBUG)
-handler = logging.StreamHandler(sys.stdout)  # logging.FileHandler(filename="outlet.log", encoding="utf-8", mode="w")
-handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
-log.addHandler(handler)
+def run_every(s, cancel_old_task=False):
+    """
+    This decorator will run a function every `s` seconds after the on_ready event.
+
+    :param int s: seconds to wait
+    :param bool cancel_old_task: (keyword) If True, the previous task will be canceled if still running.
+    """
+
+    def real_decorator(func):
+
+        @wraps(func)
+        async def new_func(self, loop):
+            task = loop.create_task(func(self))  # create task
+
+            while True:
+                await asyncio.sleep(s)
+
+                if cancel_old_task and not task.done():
+                    task.cancel()  # if necessary, cancel still running task
+
+                task = loop.create_task(func(self))  # create task again
+
+        new_func.is_bg_task = True
+
+        return new_func
+
+    return real_decorator

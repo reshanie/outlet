@@ -54,15 +54,54 @@ class Plugin(object):
         self.log = self.bot.log
 
         self.commands = []
+        self.event_listeners = {
+            "on_message": []
+        }
+        self.bg_tasks = []
 
-        self.get_commands()
+        self.running_bg_tasks = []
 
-    def get_commands(self):
-        # inits commands
+        self.collect_commands()
+        self.collect_event_listeners()
+        self.collect_bg_tasks()
+
+    def collect_commands(self):
+        # collects commands
+
+        self.log.debug("getting commands")
+
         for name in dir(self):  # get commands
             o = getattr(self, name)
             if getattr(o, "is_command", False):
                 self.commands.append(o)
+
+        self.log.info("loaded {} commands".format(len(self.commands)))
+
+    def collect_event_listeners(self):
+        # collects event listeners
+
+        self.log.debug("getting event listeners")
+
+        for name in dir(self):
+            o = getattr(self, name)
+            if getattr(o, "is_event_listener", False):
+                self.event_listeners[o.event].append(o)
+
+        listeners = sum([len(e) for e in self.event_listeners.values()])
+
+        self.log.info("loaded {} event listeners".format(listeners))
+
+    def collect_bg_tasks(self):
+        # collects background tasks
+
+        self.log.debug("getting event listeners")
+
+        for name in dir(self):
+            o = getattr(self, name)
+            if getattr(o, "is_bg_task", False):
+                self.bg_tasks.append(o)
+
+        self.log.info("loaded {} background tasks".format(len(self.bg_tasks)))
 
     def create_task(self, *args, **kwargs):
         """
@@ -73,12 +112,30 @@ class Plugin(object):
         :returns: asyncio.Task
         """
 
-        self.bot.loop.create_task(*args, **kwargs)
+        return self.bot.loop.create_task(*args, **kwargs)
+
+    async def start_bg_tasks(self):
+        self.log.info("cancelling running background tasks")
+        for bg_task in self.running_bg_tasks:  # first cancel the running tasks
+            if not bg_task.done():
+                bg_task.cancel()
+
+        self.log.info("starting background tasks")
+        for bg_task in self.bg_tasks:
+            self.create_task(bg_task(self.bot.loop))  # create the task, use the bot's event loop
+
+            self.log.debug("started {}".format(bg_task.__name__))
 
     # bot level event handling
 
     async def __on_message__(self, message):
         self.create_task(self.on_message(message))
+
+        for event_listener in self.event_listeners["on_message"]:
+            if event_listener.channel is not None and message.channel.name != event_listener.channel:
+                continue
+
+            self.create_task(event_listener(message))
 
         # command handling
         if message.content.startswith(self.bot.prefix) and message.content != self.bot.prefix:
@@ -96,6 +153,11 @@ class Plugin(object):
                     self.log.info("command raised {}: {!s}".format(e.__class__.__name__, e))
 
                     await message.channel.send(e)
+
+    async def __on_ready__(self):
+        self.create_task(self.start_bg_tasks())
+
+        self.create_task(self.on_ready())
 
     # plugin level event handling
 

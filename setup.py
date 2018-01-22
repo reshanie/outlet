@@ -18,18 +18,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import logging
-import sys
+from setuptools import setup
 
-from outlet import events
-from outlet.bot import DiscordBot
-from outlet.command import command, require_permissions
-from outlet.converters import *
-from outlet.plugin import Plugin
-from outlet.background import run_every
-
-log = logging.getLogger("outlet")
-log.setLevel(logging.DEBUG)
-handler = logging.StreamHandler(sys.stdout)  # logging.FileHandler(filename="outlet.log", encoding="utf-8", mode="w")
-handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
-log.addHandler(handler)
+setup(
+    name="outlet",
+    version="0.2",
+    author="J Patrick Dill",
+    author_email="jamespatrickdill@gmail.com",
+    description="discord bot framework",
+    license="MIT",
+    packages=["outlet"],
+    url="http://github.com/reshanie/outlet",
+)

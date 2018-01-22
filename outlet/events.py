@@ -18,18 +18,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import logging
-import sys
+# from functools import wraps
 
-from outlet import events
-from outlet.bot import DiscordBot
-from outlet.command import command, require_permissions
-from outlet.converters import *
-from outlet.plugin import Plugin
-from outlet.background import run_every
 
-log = logging.getLogger("outlet")
-log.setLevel(logging.DEBUG)
-handler = logging.StreamHandler(sys.stdout)  # logging.FileHandler(filename="outlet.log", encoding="utf-8", mode="w")
-handler.setFormatter(logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s"))
-log.addHandler(handler)
+def on_message(channel=None):
+    """
+    This decorator will run a function when an on_message event occurs.
+
+    :keyword str channel: The function will only run when it occurs in `channel`. If `channel` is None, it will run
+                          anywhere.
+    """
+
+    def real_decorator(func):
+
+        func.is_event_listener = True
+
+        func.event = "on_message"
+        func.channel = channel
+
+        return func
+
+    return real_decorator

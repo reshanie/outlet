@@ -89,7 +89,7 @@ class DiscordBot(discord.Client):
         self.log.debug("bot ready")
 
         for plugin in self.plugins:
-            await plugin.on_ready()
+            await plugin.__on_ready__()
 
     async def on_shard_ready(self, shard_id):
         self.log.debug("shard {} ready".format(shard_id))

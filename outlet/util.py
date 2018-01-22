@@ -21,6 +21,8 @@
 import importlib.util
 import os
 
+import asyncio
+
 
 def import_file(path):
     try:
@@ -31,3 +33,16 @@ def import_file(path):
         return module
     except Exception as e:
         raise ImportError(e)
+
+
+async def wait_then(s, coroutine):
+    """
+    Waits for s seconds before executing coroutine.
+
+    :param str s: Seconds to wait
+    :param asyncio.Coroutine coroutine: Coroutine
+    :return: Return value of coroutine
+    """
+    await asyncio.sleep(s)
+
+    return await coroutine
