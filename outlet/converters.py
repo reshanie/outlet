@@ -23,6 +23,7 @@ import re
 from outlet import errors
 
 mention = re.compile(r"<@!?([0-9]+)>")
+username = re.compile("(.+#[0-9]{4})")
 
 
 class Converter(object):
@@ -63,17 +64,29 @@ class Number(Converter):
 class Member(Converter):
     """
     Member converter. Converts a mention to :class:`discord.Member` . The mention must be for a member of the guild.
+
+    This converter works with @mentions or username#1234
     """
 
     @classmethod
     def convert(cls, value, ctx):
         user_id = mention.match(value)
-        if user_id is None:
-            raise errors.WrongType("`{}` isn't a user mention".format(value))
+        user_tag = username.match(value)
 
-        user_id = int(user_id.group(1))
-        member = ctx.guild.get_member(user_id)
-        if member is None:
-            raise errors.WrongType("{} isn't a member of this server".format(value))
+        if not (user_tag or user_id):
+            raise errors.WrongType("`{}` isn't a username or mention.".format(value))
 
-        return member
+        if user_id:
+            user_id = int(user_id.group(1))
+            member = ctx.guild.get_member(user_id)
+
+            if member is None:
+                raise errors.WrongType("{} isn't a member of this server".format(value))
+
+            return member
+        else:
+            member = ctx.guild.get_member_named(value)
+            if member is None:
+                raise errors.WrongType("{} isn't a member of this server".format(value))
+
+            return member
