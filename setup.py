@@ -22,7 +22,7 @@ from setuptools import setup
 
 setup(
     name="outlet",
-    version="0.2",
+    version="0.2.1",
     author="J Patrick Dill",
     author_email="jamespatrickdill@gmail.com",
     description="discord bot framework",

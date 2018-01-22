@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 
+from discord import TextChannel
 from outlet import errors
 
 
@@ -131,11 +132,12 @@ class Plugin(object):
     async def __on_message__(self, message):
         self.create_task(self.on_message(message))
 
-        for event_listener in self.event_listeners["on_message"]:
-            if event_listener.channel is not None and message.channel.name != event_listener.channel:
-                continue
+        if isinstance(message.channel, TextChannel):
+            for event_listener in self.event_listeners["on_message"]:
+                if event_listener.channel is not None and message.channel.name != event_listener.channel:
+                    continue
 
-            self.create_task(event_listener(message))
+                self.create_task(event_listener(message))
 
         # command handling
         if message.content.startswith(self.bot.prefix) and message.content != self.bot.prefix:
