@@ -31,6 +31,8 @@ def on_message(channel=None):
 
     def real_decorator(func):
 
+        # this decorator doesn't actually do any event handling
+        # just lets the plugin know that this is an event listener
         func.is_event_listener = True
 
         func.event = "on_message"

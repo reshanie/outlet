@@ -90,3 +90,20 @@ class Member(Converter):
                 raise errors.WrongType("{} isn't a member of this server".format(value))
 
             return member
+
+
+class RelativeTime(Converter):
+    """
+    Converts a relative time to its number of seconds (e.g., 10:45 = 10*60 + 45 = 645)
+    """
+
+    @classmethod
+    def convert(cls, value, ctx):
+        try:
+            times = [int(n) for n in value.split(":")]
+        except ValueError:
+            raise errors.WrongType("Relative times should be in the format `hh:mm:ss`")
+        else:
+            times = [0] * (3 - len(times)) + times
+
+            return times[0] * 60 * 60 + times[1] * 60 + times[2]

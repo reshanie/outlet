@@ -147,7 +147,7 @@ def command(cmd):
 
 def require_permissions(*permission):
     """
-    Decorator factory that makes command require named permission(s)
+    Decorator that makes command require named permission(s)
 
     :param str permission: permission(s) to require
     """
