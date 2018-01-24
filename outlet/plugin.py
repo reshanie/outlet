@@ -27,31 +27,36 @@ class Plugin(object):
     """
     Plugin class. Create your own plugins by inheriting this class.
 
-    :attr outlet.DiscordBot bot: Bot the plugin belongs to.
-
     Events
-    ------
+    ======
 
     To use the raw events, you can overwrite them like a regular discord client. For example ::
+
         class Plugin(outlet.Plugin):
             async def on_ready(self):
                 print("I'm ready!")
 
+
+
     The Plugin class *must* be named Plugin for it to be used.
 
     Commands
-    --------
+    ========
 
-    You can also create commands using the class's command decorator.
+    You can also create commands with the command decorator.
     Commands are passed a :class:`Context`, which has information about the message and helper functions.
+    For example ::
+        @outlet.command("ping")
+        async def ping_pong(ctx):
+            ctx.send("pong")
 
-    @self.command("ping")
-    async def ping_pong(ctx):
-        ctx.send("pong")
+
     """
 
     def __init__(self, bot):
+        #: Bot the plugin belongs to
         self.bot = bot
+
         self.log = self.bot.log
 
         self.commands = []
@@ -106,7 +111,7 @@ class Plugin(object):
 
     def create_task(self, *args, **kwargs):
         """
-        Shortcut to Plugin.bot.loop.create_task
+        Shortcut to :meth:`Plugin.bot.loop.create_task`
 
         Call this on a coroutine to run it without blocking.
 

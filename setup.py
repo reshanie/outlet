@@ -20,9 +20,11 @@
 
 from setuptools import setup
 
+from outlet import version_string
+
 setup(
     name="outlet",
-    version="0.2.3",
+    version=version_string,
     author="J Patrick Dill",
     author_email="jamespatrickdill@gmail.com",
     description="discord bot framework",

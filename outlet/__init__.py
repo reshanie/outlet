@@ -28,6 +28,10 @@ from outlet.converters import *
 from outlet.plugin import Plugin
 from outlet.background import run_every
 
+__version__ = (0, 2, 4)
+
+version_string = "{}.{}r{}".format(*__version__)
+
 log = logging.getLogger("outlet")
 log.setLevel(logging.DEBUG)
 handler = logging.StreamHandler(sys.stdout)  # logging.FileHandler(filename="outlet.log", encoding="utf-8", mode="w")
