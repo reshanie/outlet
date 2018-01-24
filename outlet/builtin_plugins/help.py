@@ -24,7 +24,8 @@ class Plugin(outlet.Plugin):
 
             command_list = "\n".join(commands)
 
-            new_embed.add_field(name=plugin.__plugin__, value=command_list)
+            if commands:
+                new_embed.add_field(name=plugin.__plugin__, value=command_list)
 
         return new_embed
 
