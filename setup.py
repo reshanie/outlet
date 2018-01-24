@@ -29,6 +29,6 @@ setup(
     author_email="jamespatrickdill@gmail.com",
     description="discord bot framework",
     license="MIT",
-    packages=["outlet"],
+    packages=["outlet", "outlet/builtin_plugins"],
     url="http://github.com/reshanie/outlet",
 )
