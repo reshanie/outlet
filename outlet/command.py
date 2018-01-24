@@ -82,6 +82,9 @@ def convert_arguments(args, signature, ctx):
     converted_args = []
 
     for i in range(len(params)):
+        if len(args) == 0:
+            break
+
         while args[0] == "":  # ignore empty arguments caused by double spaces
             del args[0]
 
