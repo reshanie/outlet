@@ -111,11 +111,25 @@ def convert_arguments(args, signature, ctx):
     return converted_args
 
 
-def command(cmd):
+def help_message(sig, doc):
+    msg = ""
+
+    params = list(sig.parameters.values())
+    params = params[2:] if len(params) > 2 else []
+
+    for arg in params:
+        type_ = "String" if arg.annotation == Parameter.empty else arg.annotation.__name__
+
+        msg += "{}<{}: {}> ".format("*" if arg.kind == Parameter.VAR_POSITIONAL else "", arg.name, type_)
+
+    return "{}\n\n{}".format(msg, doc or "")
+
+
+def command(*cmd):
     """
     Decorator used to create commands.
 
-    :param cmd: The name of the command, used to call it. Don't include the bot prefix.
+    :param *cmd: The name(s) of the command, used to call it. Don't include the bot prefix.
     """
 
     def real_decorator(func):
@@ -128,7 +142,7 @@ def command(cmd):
             command_ = content[0]  # actual named command
             args = content[1:] if len(content) > 1 else []  # list of arguments passed
 
-            if command_ != cmd:  # doesn't match this command
+            if command_ not in cmd:  # doesn't match this command
                 return
 
             ctx = Context(message)  # message context is passed to function
@@ -140,6 +154,7 @@ def command(cmd):
 
         real_command.is_command = True
         real_command.command = cmd
+        real_command.help_message = help_message(signature, func.__doc__)
 
         return real_command
 

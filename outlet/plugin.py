@@ -53,13 +53,16 @@ class Plugin(object):
 
     """
 
+    #: Name of plugin.
+    __plugin__ = "default"
+
     def __init__(self, bot):
         #: Bot the plugin belongs to
         self.bot = bot
 
         self.log = self.bot.log
 
-        self.commands = []
+        self.commands = {}
         self.event_listeners = {
             "on_message": []
         }
@@ -79,7 +82,8 @@ class Plugin(object):
         for name in dir(self):  # get commands
             o = getattr(self, name)
             if getattr(o, "is_command", False):
-                self.commands.append(o)
+                for cmd in o.command:
+                    self.commands[cmd] = o
 
         self.log.info("loaded {} commands".format(len(self.commands)))
 
@@ -152,10 +156,11 @@ class Plugin(object):
                 return
 
             no_prefix = message.content[len(self.bot.prefix):]
+            cmd = no_prefix.split(" ")[0]
 
-            for command in self.commands:
+            if cmd in self.commands:
                 try:
-                    await command(message, no_prefix)
+                    await self.commands[cmd](message, no_prefix)
                 except errors.CommandError as e:
                     self.log.info("command raised {}: {!s}".format(e.__class__.__name__, e))
 

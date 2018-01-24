@@ -22,11 +22,11 @@ import logging
 import sys
 
 from outlet import events
-from outlet.bot import DiscordBot
 from outlet.command import command, require_permissions
 from outlet.converters import *
 from outlet.plugin import Plugin
 from outlet.background import run_every
+from outlet.bot import DiscordBot
 
 __version__ = (0, 2, 4)
 

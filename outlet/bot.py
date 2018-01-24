@@ -24,7 +24,7 @@ import os
 
 import discord
 
-from outlet import util
+from outlet import builtin_plugins, util
 
 log = logging.getLogger("outlet")
 
@@ -50,17 +50,26 @@ class DiscordBot(discord.Client):
 
         self.log = logger
 
+        self.all_commands = {}
+
         self.plugins = self.get_plugins(plugin_dir)
+        self.get_all_commands()
 
     def run(self):
         self.log.info("starting bot")
 
         super().run(self.token)
 
+    def get_all_commands(self):
+        # get dict with all commands for help plugin
+
+        for plugin in self.plugins:
+            self.all_commands.update(plugin.commands)
+
     def get_plugins(self, plugin_dir):
         # import all plugins from directory
 
-        plugins = []
+        plugins = [plugin(self) for plugin in builtin_plugins.plugins]
 
         files = glob.glob(os.path.join(plugin_dir, "*.py"))
         for file in files:
@@ -82,6 +91,21 @@ class DiscordBot(discord.Client):
     #     exc = sys.exc_info()[1]
     #
     #     self.log.error("exception while handling {} event: {!s}".format(event_method, exc))
+
+    # util functions
+
+    async def my_color(self, guild):
+        """
+        Returns the color of the bot's role in a specific guild.
+
+        :param guild: Guild to get color from.
+        """
+
+        me = guild.get_member(self.user.id)
+        if me is None:
+            raise ValueError("bot must be in guild to get its color")
+
+        return me.color
 
     # event funneling
 
