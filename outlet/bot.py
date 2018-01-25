@@ -24,6 +24,8 @@ import os
 
 import discord
 
+import aiohttp
+
 from outlet import builtin_plugins, util
 
 log = logging.getLogger("outlet")
@@ -54,6 +56,8 @@ class DiscordBot(discord.Client):
 
         self.plugins = self.get_plugins(plugin_dir)
         self.get_all_commands()
+
+        self.http = aiohttp.ClientSession()
 
     def run(self):
         self.log.info("starting bot")
