@@ -191,7 +191,7 @@ def require_permissions(*permission):
                 if not getattr(author_permissions, perm, False):
                     raise errors.MissingPermission("This command requires the `{}` permission".format(perm))
 
-            await func(self_, ctx, *args)
+            return await func(self_, ctx, *args)
 
         return new_func
 
@@ -211,7 +211,7 @@ def owner_only(func):
         if ctx.author != ctx.guild.owner:
             raise errors.MissingPermission("Only the owner of the guild can use this command")
 
-        await func(self_, ctx, *args)
+        return await func(self_, ctx, *args)
 
     return new_func
 
@@ -241,7 +241,7 @@ def cooldown(seconds):
 
             guild_calls[ctx.guild.id] = time.time()
 
-            await func(self_, ctx, *args)
+            return await func(self_, ctx, *args)
 
         return new_func
 
