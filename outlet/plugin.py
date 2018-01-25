@@ -60,6 +60,9 @@ class Plugin(object):
         #: Bot the plugin belongs to
         self.bot = bot
 
+        # clone bot
+        self.get_resource = self.bot.get_resource
+
         self.http = self.bot.http_session
 
         self.log = self.bot.log

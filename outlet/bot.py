@@ -37,16 +37,18 @@ class DiscordBot(discord.Client):
     funnels the events into them.
 
     :param str token: Bot token used to connect to Discord
-    :param str plugin_dir: Directory where plugin files are stored.
+    :keyword str plugin_dir: Directory where plugin files are stored.
     :keyword str prefix: Bot prefix. Defaults to "!"
     :keyword logger: Logger to be used by bot. If none is given, Outlet's logger is used.
     """
 
-    def __init__(self, token, plugin_dir, prefix="!", logger=log):
+    def __init__(self, token, *, plugin_dir, resource_dir, prefix="!", logger=log):
         super().__init__()
 
         self.token = token
+
         self.plugin_dir = plugin_dir
+        self.resource_dir = resource_dir
 
         self.http_session = aiohttp.ClientSession()
 
@@ -58,6 +60,9 @@ class DiscordBot(discord.Client):
 
         self.plugins = self.get_plugins(plugin_dir)
         self.get_all_commands()
+
+    def get_resource(self, file):
+        return util.import_file(os.path.join(self.resource_dir, file))
 
     def run(self):
         self.log.info("starting bot")
