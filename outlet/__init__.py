@@ -22,13 +22,13 @@ import logging
 import sys
 
 from outlet import events
-from outlet.command import command, require_permissions
+from outlet.command import command, require_permissions, cooldown
 from outlet.converters import *
 from outlet.plugin import Plugin
 from outlet.background import run_every
 from outlet.bot import DiscordBot
 
-__version__ = (0, 3, 2)
+__version__ = (0, 3, 4)
 
 version_string = "{}.{}r{}".format(*__version__)
 

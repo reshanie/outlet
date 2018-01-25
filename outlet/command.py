@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import time
 from functools import wraps
 from inspect import Signature, Parameter
 
@@ -209,3 +210,35 @@ def owner_only(func):
         await func(self_, ctx, *args)
 
     return new_func
+
+
+def cooldown(seconds):
+    """
+    Adds a per-server cooldown to a command.
+
+    :param int seconds: Length of cooldown in seconds.
+    :return:
+    """
+
+    def real_decorator(func):
+        if getattr(func, "is_command", False):
+            # @outlet.command("h")
+            # @require_permissions("h")
+            # async def h_command(self, ctx):
+
+            raise SyntaxError("@require_permissions() decorator should be placed under the @command decorator")
+
+        guild_calls = {}
+
+        @wraps(func)
+        async def new_func(self_, ctx, *args):
+            if time.time() - guild_calls.get(ctx.guild.id, 0) < seconds:
+                raise errors.CommandError("This command has a {} second cooldown.".format(seconds))
+
+            guild_calls[ctx.guild.id] = time.time()
+
+            await func(self_, ctx, *args)
+
+        return new_func
+
+    return real_decorator
