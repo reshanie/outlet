@@ -151,7 +151,11 @@ def command(*cmd):
             args = convert_arguments(args, signature, ctx)  # convert the arguments according to function signature
             # this will also checked for incorrect number of arguments
 
-            await func(self_, ctx, *args)
+            returned = await func(self_, ctx, *args)
+
+            # automatically send return value to channel if its a string
+            if isinstance(returned, str):
+                await ctx.send(returned)
 
         real_command.is_command = True
         real_command.command = cmd

@@ -48,6 +48,8 @@ class DiscordBot(discord.Client):
         self.token = token
         self.plugin_dir = plugin_dir
 
+        self.http_session = aiohttp.ClientSession()
+
         self.prefix = prefix
 
         self.log = logger
@@ -56,8 +58,6 @@ class DiscordBot(discord.Client):
 
         self.plugins = self.get_plugins(plugin_dir)
         self.get_all_commands()
-
-        self.http = aiohttp.ClientSession()
 
     def run(self):
         self.log.info("starting bot")

@@ -60,7 +60,7 @@ class Plugin(object):
         #: Bot the plugin belongs to
         self.bot = bot
 
-        self.http = self.bot.http
+        self.http = self.bot.http_session
 
         self.log = self.bot.log
 
