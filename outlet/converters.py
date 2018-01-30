@@ -102,7 +102,7 @@ class RelativeTime(Converter):
         try:
             times = [int(n) for n in value.split(":")]
         except ValueError:
-            raise errors.WrongType("Relative times should be in the format `hh:mm:ss`")
+            raise errors.WrongType("Times should be in the format `hh:mm:ss`")
         else:
             times = [0] * (3 - len(times)) + times
 

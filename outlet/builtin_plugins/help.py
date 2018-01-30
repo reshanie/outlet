@@ -14,7 +14,11 @@ class Plugin(outlet.Plugin):
     __plugin__ = "Help"
 
     async def help_embed(self, guild):
-        new_embed = discord.Embed(name="Commands", description="__**Commands**__", color=await self.bot.my_color(guild))
+        new_embed = discord.Embed(name="Commands",
+                                  description="Do **$help <command>** for more information about a command.",
+                                  color=await self.bot.my_color(guild))
+
+        new_embed.set_author(name="Commands")
 
         for plugin in self.bot.plugins:
             commands = []
