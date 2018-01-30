@@ -28,7 +28,7 @@ from outlet.plugin import Plugin
 from outlet.background import run_every
 from outlet.bot import DiscordBot
 
-__version__ = (0, 4, 0)
+__version__ = (0, 4, 1)
 
 version_string = "{}.{}r{}".format(*__version__)
 
