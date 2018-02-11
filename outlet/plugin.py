@@ -137,7 +137,7 @@ class Plugin(object):
 
         self.log.info("starting background tasks")
         for bg_task in self.bg_tasks:
-            self.bg_tasks.append(
+            self.running_bg_tasks.append(
                 self.create_task(bg_task(self.bot.loop))  # create the task, use the bot's event loop
             )
 
