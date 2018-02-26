@@ -22,9 +22,8 @@ class Plugin(outlet.Plugin):
 
         for plugin in self.bot.plugins:
             commands = []
-            for command in plugin.commands.values():
-                for cmd_name in command.command:
-                    commands.append(self.bot.prefix + cmd_name)
+            for name, command in plugin.commands.items():
+                commands.append(self.bot.prefix + name)
 
             command_list = "\n".join(commands)
 
