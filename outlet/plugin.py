@@ -195,6 +195,9 @@ class Plugin(object):
     async def on_message_delete(self, message):
         pass
 
+    async def on_raw_message_delete(self, message_id, channel_id):
+        pass
+
     async def on_message_edit(self, before, after):
         pass
 

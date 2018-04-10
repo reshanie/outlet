@@ -142,6 +142,10 @@ class DiscordBot(discord.Client):
         for plugin in self.plugins:
             await plugin.on_message_delete(message)
 
+    async def on_raw_message_delete(self, message_id, channel_id):
+        for plugin in self.plugins:
+            await plugin.on_message_delete(message_id, channel_id)
+
     async def on_message_edit(self, before, after):
         for plugin in self.plugins:
             await plugin.on_message_edit(before, after)
